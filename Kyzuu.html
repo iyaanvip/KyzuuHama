@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Painzy ExE - Admin</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --primary-gradient: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+  --bg-primary: #fff;
+  --border-color: #e2e8f0;
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1),0 10px 10px -5px rgba(0,0,0,0.04);
+  --shadow-glow: 0 0 30px rgba(102,126,234,0.15);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background: var(--bg-primary);
+  color: #1e293b;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Auth & Main Container */
+.auth-container {
+  min-height: 100vh;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+}
+
+.auth-container.active {
+  display: flex;
+}
+
+/* Cards */
+.auth-card, .main-content {
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  border-radius: 32px;
+  padding: 3rem;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: var(--shadow-xl);
+  text-align: left;
+  position: relative;
+}
+
+.auth-card::before, .main-content::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 5px;
+  background: var(--primary-gradient);
+}
+
+/* Header & Logo */
+.auth-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.logo-icon {
+  width: 60px;
+  height: 60px;
+  background: var(--primary-gradient);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.8rem;
+  color: white;
+  box-shadow: var(--shadow-glow);
+}
+
+.logo-text h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.25rem;
+}
+
+.logo-text p {
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Form */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper i {
+  position: absolute;
+  left: 1rem;
+  color: #64748b;
+  z-index: 2;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  font-size: 1rem;
+  background: var(--bg-primary);
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.input-wrapper input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  transform: translateY(-2px);
+}
+
+/* Buttons */
+.auth-btn {
+  background: var(--primary-gradient);
+  border: none;
+  border-radius: 16px;
+  padding: 1.25rem 2rem;
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  margin-top: 1rem;
+  box-shadow: var(--shadow-glow);
+}
+
+.auth-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(102,126,234,0.3);
+}
+
+.logout-btn {
+  background: #ff4d4f;
+  border-radius: 16px;
+  padding: 0.75rem 1.5rem;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+/* List */
+.result-list {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 10px 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.result-item .label {
+  font-weight: 600;
+  color: #333;
+}
+
+.copy-btn, .remove-btn {
+  background: #4CAF50;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.remove-btn { background: #ff4d4f; }
+.copy-btn:hover { background: #45a049; }
+.remove-btn:hover { background: #d9363e; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  box-shadow: var(--shadow-xl);
+  transform: translateX(500px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.5s;
+  z-index: 9999;
+  max-width: 350px;
+}
+
+.toast.show {
+  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.toast-icon { font-size: 1.25rem; }
+.toast.success .toast-icon { color: #11998e; }
+.toast.error .toast-icon { color: #ff6b6b; }
+.toast-message {
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.hidden { display: none; }
+.btn-loader { display: none; }
+
+.auth-btn.loading .btn-text { display: none; }
+.auth-btn.loading .btn-loader {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div class="auth-container active" id="login-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="logo">
+        <div class="logo-icon">A</div>
+        <div class="logo-text">
+          <h1>Admin Painzy</h1>
+          <p>Panel Admin</p>
+        </div>
+      </div>
+    </div>
+    <form class="auth-form" id="loginForm">
+      <div class="form-group">
+        <label>Username</label>
+        <div class="input-wrapper"><i class="fas fa-user"></i><input type="text" id="adminUser" required></div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrapper"><i class="fas fa-lock"></i><input type="password" id="adminPass" required></div>
+      </div>
+      <button type="submit" class="auth-btn" id="loginBtn"><span class="btn-text">LOGIN</span><div class="btn-loader"></div></button>
+    </form>
+  </div>
+</div>
+
+<!-- ACCOUNT LIST PAGE -->
+<div class="auth-container" id="list-page">
+  <div class="main-content">
+    <h2 style="text-align:center;margin-bottom:1.5rem;">Create New Account</h2>
+    <form class="auth-form" id="createForm">
+      <div class="form-group">
+        <label>Username</label>
+        <div class="input-wrapper"><i class="fas fa-user"></i><input type="text" id="newUser" required></div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrapper"><i class="fas fa-lock"></i><input type="password" id="newPass" required></div>
+      </div>
+      <button type="submit" class="auth-btn" id="createBtn"><span class="btn-text">CREATE ACCOUNT</span><div class="btn-loader"></div></button>
+    </form>
+
+    <hr style="margin:2rem 0;border:none;border-top:1px dashed #ccc;">
+
+    <h2 style="text-align:center;margin-bottom:1.5rem;">List Accounts</h2>
+    <div id="accountList" class="result-list"></div>
+    <div style="text-align:center;margin-top:1rem;">
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-content">
+    <i class="toast-icon"></i>
+    <span class="toast-message"></span>
+  </div>
+</div>
+
+<!-- SCRIPT -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const toast = document.getElementById("toast");
+  const loginPage = document.getElementById("login-page");
+  const listPage = document.getElementById("list-page");
+  const loginForm = document.getElementById("loginForm");
+  const createForm = document.getElementById("createForm");
+  const accountList = document.getElementById("accountList");
+  const loginBtn = document.getElementById("loginBtn");
+  const createBtn = document.getElementById("createBtn");
+
+  const BIN_ID = "68b2a0bc43b1c97be9303b9d"; 
+  const MASTER_KEY = "$2a$10$IxJzK95mhbwswU9V0jGsPuxSq04KuMH3DdozB4PuMjz011pgzO07u";
+
+  // TOAST FUNCTION
+  function showToast(msg, type="success") {
+    const icon = toast.querySelector(".toast-icon");
+    const message = toast.querySelector(".toast-message");
+    toast.className = 'toast show';
+    toast.classList.add(type);
+    icon.className = "toast-icon fas";
+    icon.classList.add(type === "success" ? "fa-check-circle" : "fa-exclamation-circle");
+    message.textContent = msg;
+    setTimeout(() => toast.classList.remove("show", type), 4000);
+  }
+
+  toast.addEventListener("click", () => toast.classList.remove("show"));
+
+  function showPage(pageId){
+    loginPage.classList.remove("active");
+    listPage.classList.remove("active");
+    document.getElementById(pageId).classList.add("active");
+  }
+
+  // AUTO-LOGIN
+  if(localStorage.getItem("adminLogin")){
+    showPage("list-page");
+    loadAccounts();
+  }
+
+  // LOGIN
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    loginBtn.classList.add("loading");
+    const user = document.getElementById("adminUser").value.trim();
+    const pass = document.getElementById("adminPass").value.trim();
+
+    if(user === "kyzuu" && pass === "kyzuu") {
+      localStorage.setItem("adminLogin","true");
+      showPage("list-page");
+      showToast("✅ Login berhasil", "success");
+      loadAccounts();
+    } else showToast("❌ Username/password salah","error");
+
+    loginBtn.classList.remove("loading");
+  });
+
+  // LOAD ACCOUNTS
+  async function loadAccounts() {
+    accountList.innerHTML = "<p style='text-align:center;'>Loading accounts...</p>";
+    try {
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: { 'X-Master-Key': MASTER_KEY }});
+      if(!res.ok) throw new Error("Gagal load akun dari JSONBin.");
+      const data = await res.json();
+      const accounts = data.record || [];
+      accountList.innerHTML = "";
+
+      if(accounts.length === 0){
+        accountList.innerHTML = "<p style='text-align:center;'>No accounts found.</p>";
+      } else {
+        accounts.forEach((acc,index) => {
+          const div = document.createElement("div");
+          div.className = "result-item";
+          div.innerHTML = `<span class="label">${acc.username}</span><button class="remove-btn" data-index="${index}">REMOVE</button>`;
+          accountList.appendChild(div);
+
+          div.querySelector(".remove-btn").addEventListener("click", async () => {
+            if(confirm(`Are you sure you want to delete account: ${acc.username}?`)) {
+              await deleteAccount(acc.username);
+            }
+          });
+        });
+      }
+    } catch(err) {
+      console.error(err);
+      accountList.innerHTML = `<p style='text-align:center;color:red;'>Failed to load accounts: ${err.message}</p>`;
+    }
+  }
+
+  // CREATE ACCOUNT
+  createForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    createBtn.classList.add("loading");
+    const newUser = document.getElementById("newUser").value.trim();
+    const newPass = document.getElementById("newPass").value.trim();
+
+    try {
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: { 'X-Master-Key': MASTER_KEY }});
+      if(!res.ok) throw new Error("Failed to retrieve account data.");
+      const data = await res.json();
+      let accounts = data.record || [];
+
+      if(accounts.some(acc => acc.username === newUser)){
+        showToast("❌ Username sudah terdaftar","error");
+        createBtn.classList.remove("loading");
+        return;
+      }
+
+      accounts.push({username: newUser, password: newPass, activeDevice: null});
+
+      const updateRes = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
+        body: JSON.stringify(accounts)
+      });
+
+      if(!updateRes.ok) throw new Error("Failed to create account.");
+      showToast("✅ Akun berhasil dibuat!","success");
+      createForm.reset();
+      loadAccounts();
+
+    } catch(err) {
+      console.error(err);
+      showToast("❌ Gagal membuat akun: " + err.message, "error");
+    }
+
+    createBtn.classList.remove("loading");
+  });
+
+  // DELETE ACCOUNT
+  async function deleteAccount(usernameToDelete){
+    try {
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: { 'X-Master-Key': MASTER_KEY }});
+      if(!res.ok) throw new Error("Failed to retrieve account data.");
+      const data = await res.json();
+      let accounts = data.record || [];
+
+      accounts = accounts.filter(acc => acc.username !== usernameToDelete);
+
+      const updateRes = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
+        body: JSON.stringify(accounts)
+      });
+
+      if(!updateRes.ok) throw new Error("Failed to delete account.");
+      showToast(`✅ Akun ${usernameToDelete} berhasil dihapus!`, "success");
+      loadAccounts();
+
+    } catch(err) {
+      console.error(err);
+      showToast(`❌ Gagal menghapus akun: ${err.message}`, "error");
+    }
+  }
+
+  // LOGOUT
+  window.logout = () => {
+    localStorage.removeItem("adminLogin");
+    showPage("login-page");
+    showToast("✅ Logout berhasil","success");
+  };
+});
+</script>
+</body>
+</html>

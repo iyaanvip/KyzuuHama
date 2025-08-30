@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kyzuu404</title>
+
+<!-- Fonts & Icons -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Styles -->
+<style>
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    --error-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #f1f5f9;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-accent: #3b82f6;
+    --border-color: #e2e8f0;
+    --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -1px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1),0 10px 10px -5px rgba(0,0,0,0.04);
+    --shadow-glow: 0 0 30px rgba(102,126,234,0.15);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg-primary);
+    color:var(--text-primary);
+    line-height:1.6;
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+/* ===== Containers ===== */
+.auth-container {
+    min-height:100vh;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    padding:2rem;
+    text-align:center;
+}
+.auth-container.active { display:flex; }
+
+.auth-background {
+    position:fixed;
+    top:0; left:0; width:100%; height:100%;
+    z-index:-1;
+    background:linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%);
+}
+.auth-background::before {
+    content:"";
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    background:radial-gradient(circle at 20% 80%,rgba(102,126,234,0.05)0%,transparent 50%),
+               radial-gradient(circle at 80% 20%,rgba(245,87,108,0.05)0%,transparent 50%),
+               radial-gradient(circle at 40% 40%,rgba(79,172,254,0.03)0%,transparent 50%);
+    animation:backgroundShift 25s ease-in-out infinite;
+}
+@keyframes backgroundShift {
+    0%,100% { transform:scale(1) rotate(0deg); opacity:1; }
+    50% { transform:scale(1.05) rotate(2deg); opacity:0.8; }
+}
+
+.floating-shapes { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+.shape {
+    position:absolute;
+    border-radius:50%;
+    animation:float 20s infinite linear;
+    opacity:0.1;
+}
+.shape:nth-child(1){ width:80px; height:80px; background:var(--primary-gradient); top:20%; left:10%; animation-duration:25s; }
+.shape:nth-child(2){ width:60px; height:60px; background:var(--secondary-gradient); top:60%; right:10%; animation-duration:30s; animation-direction:reverse; }
+.shape:nth-child(3){ width:40px; height:40px; background:var(--accent-gradient); top:80%; left:20%; animation-duration:35s; }
+.shape:nth-child(4){ width:50px; height:50px; background:var(--success-gradient); top:10%; right:30%; animation-duration:40s; }
+@keyframes float {
+    0% { transform:translateY(0px) rotate(0deg); }
+    33% { transform:translateY(-30px) rotate(120deg); }
+    66% { transform:translateY(30px) rotate(240deg); }
+    100% { transform:translateY(0px) rotate(360deg); }
+}
+
+/* ===== Auth Card ===== */
+.auth-card {
+    background:rgba(255,255,255,0.95);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border:1px solid var(--border-color);
+    border-radius:32px;
+    padding:3rem;
+    width:100%; max-width:450px;
+    box-shadow:var(--shadow-xl);
+    position:relative;
+    overflow:hidden;
+    animation:slideInUp 0.8s ease-out;
+    text-align:left;
+}
+.auth-card::before {
+    content:"";
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:5px;
+    background:var(--primary-gradient);
+}
+@keyframes slideInUp { from { opacity:0; transform:translateY(40px);} to { opacity:1; transform:translateY(0);} }
+
+.auth-header{text-align:center;margin-bottom:2.5rem;}
+.logo { display:flex; align-items:center; justify-content:center; gap:1rem; margin-bottom:1rem; }
+.logo-icon {
+    width:60px; height:60px; background:var(--primary-gradient);
+    border-radius:20px; display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:1.8rem; color:white; box-shadow:var(--shadow-glow);
+    animation:logoFloat 3s ease-in-out infinite;
+}
+@keyframes logoFloat {0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-5px) rotate(5deg);}}
+.logo-text h1 {
+    font-size:2rem; font-weight:800;
+    background:var(--primary-gradient);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    margin-bottom:0.25rem;
+}
+.logo-text p{ color:var(--text-secondary); font-weight:500; }
+
+/* ===== Forms ===== */
+.auth-form { display:flex; flex-direction:column; gap:1.5rem; }
+.form-group { display:flex; flex-direction:column; gap:0.5rem; }
+.input-wrapper{ position:relative; display:flex; align-items:center; }
+.input-wrapper i{ position:absolute; left:1rem; color:var(--text-secondary); z-index:2; }
+.input-wrapper input,.input-wrapper select {
+    width:100%; padding:1rem 1rem 1rem 3rem;
+    border:2px solid var(--border-color); border-radius:16px;
+    font-size:1rem; background:var(--bg-primary); transition:all 0.3s ease; font-family:inherit;
+}
+.input-wrapper select { appearance:none; cursor:pointer; }
+.input-wrapper input:focus,.input-wrapper select:focus {
+    outline:none; border-color:var(--text-accent);
+    box-shadow:0 0 0 3px rgba(59,130,246,0.1); transform:translateY(-2px);
+}
+
+.toggle-password{
+    position:absolute; right:1rem; background:none; border:none; color:var(--text-secondary);
+    cursor:pointer; padding:0.5rem; border-radius:8px; transition:all 0.3s ease;
+}
+.toggle-password:hover{ color:var(--text-primary); background:var(--bg-secondary); }
+
+.auth-btn {
+    background:var(--primary-gradient); border:none; border-radius:16px;
+    padding:1.25rem 2rem; color:white; font-weight:600; font-size:1.1rem;
+    cursor:pointer; transition:all 0.3s ease; position:relative; overflow:hidden; margin-top:1rem;
+    box-shadow:var(--shadow-glow);
+}
+.auth-btn:hover{ transform:translateY(-3px); box-shadow:0 10px 30px rgba(102,126,234,0.3); }
+.auth-btn:active{ transform:translateY(-1px); }
+.auth-btn.loading .btn-loader{ opacity:1; }
+.btn-loader {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    opacity:0; transition:opacity 0.3s ease;
+}
+.spinner {
+    width:24px; height:24px; border:3px solid rgba(255,255,255,0.3);
+    border-radius:50%; border-top-color:white; animation:spin 1s ease-in-out infinite;
+}
+@keyframes spin { to{ transform:rotate(360deg); } }
+
+.auth-footer { text-align:center; margin-top:2rem; padding-top:2rem; border-top:1px solid var(--border-color); }
+.auth-footer p { color:var(--text-secondary); font-size:0.9rem; }
+
+/* Main MT Page */
+.main-content {
+    padding:4rem 2rem; background:white; border:1px solid var(--border-color);
+    border-radius:32px; width:100%; max-width:800px;
+    box-shadow:var(--shadow-xl); animation:slideInUp 0.8s ease-out; text-align:left;
+}
+.page-header { margin-bottom:2rem; text-align:center; }
+.page-header h2 {
+    font-size:2.5rem; font-weight:800; background:var(--primary-gradient);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+
+.nav-buttons { display:flex; justify-content:center; gap:1.5rem; margin-top:2rem; }
+.nav-btn {
+    background:var(--primary-gradient); color:white; border:none; border-radius:16px;
+    padding:1rem 2rem; font-weight:600; font-size:1rem; cursor:pointer;
+    transition:all 0.3s ease; box-shadow:var(--shadow-md);
+}
+.nav-btn:hover { transform:translateY(-2px); box-shadow:var(--shadow-lg); }
+.logout-btn {
+    background:var(--error-gradient); border-radius:16px; padding:0.75rem 1.5rem;
+    color:white; font-weight:600; cursor:pointer; border:none; transition:all 0.3s ease; margin-top:1rem;
+}
+.logout-btn:hover { transform:scale(1.05); }
+
+/* Toast Notification */
+.toast {
+    position:fixed; top:2rem; right:2rem; background:white; border:1px solid var(--border-color);
+    border-radius:16px; padding:1rem 1.5rem; box-shadow:var(--shadow-xl);
+    transform:translateX(500px); opacity:0; visibility:hidden;
+    transition:all 0.5s cubic-bezier(0.4,0,0.2,1); z-index:9999; max-width:350px;
+}
+.toast.show { transform:translateX(0); opacity:1; visibility:visible; }
+.toast-content { display:flex; align-items:center; gap:0.75rem; }
+.toast-icon { font-size:1.25rem; }
+.toast.success .toast-icon { color:#11998e; }
+.toast.error .toast-icon { color:#ff6b6b; }
+.toast-message { font-weight:500; color:var(--text-primary); }
+
+/* MT Form */
+.mt-form input,.mt-form select { width:100%; padding:10px; margin:8px 0; border-radius:8px; border:1px solid #ccc; }
+.result-list { margin-top:20px; display:flex; flex-direction:column; gap:10px; }
+.result-item {
+    display:flex; justify-content:space-between; align-items:center;
+    background:#f8f9fa; padding:10px 15px; border-radius:10px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+.result-item .label { font-weight:600; color:#333; }
+.result-item .copy-btn {
+    background:#4CAF50; border:none; color:white; padding:6px 12px;
+    border-radius:6px; cursor:pointer; font-weight:600;
+}
+.copy-btn:hover { background:#45a049; }
+.hidden { display:none; }
+
+/* Responsive */
+@media (max-width:768px){
+    .auth-container{ padding:1rem; }
+    .auth-card,.main-content{ padding:2rem; border-radius:24px; }
+    .logo{ flex-direction:column; gap:0.5rem; }
+    .logo-icon{ width:50px; height:50px; font-size:1.5rem; }
+    .logo-text h1{ font-size:1.75rem; }
+    .toast{ top:1rem; right:1rem; left:1rem; max-width:none; transform:translateY(-200px);}
+    .toast.show{ transform:translateY(0); }
+}
+</style>
+</head>
+
+<body>
+<!-- Login Page -->
+<div class="auth-container active" id="login-page">
+    <div class="auth-background">
+        <div class="floating-shapes">
+            <div class="shape"></div><div class="shape"></div><div class="shape"></div><div class="shape"></div>
+        </div>
+    </div>
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="logo">
+                <div class="logo-icon">P</div>
+                <div class="logo-text">
+                    <h1>Kyzuu404</h1>
+                    <p>Professional Band System</p>
+                </div>
+            </div>
+        </div>
+        <form class="auth-form" id="loginForm">
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" placeholder="Enter username" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="Enter Password" required>
+                </div>
+            </div>
+            <button type="submit" class="auth-btn" id="loginBtn">
+                <span class="btn-text">Masuk</span>
+                <div class="btn-loader"><div class="spinner"></div></div>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- MT Page -->
+<div class="auth-container" id="mt-page">
+    <div class="auth-background">
+        <div class="floating-shapes">
+            <div class="shape"></div><div class="shape"></div><div class="shape"></div><div class="shape"></div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="page-header">
+            <h2>MT Generator</h2>
+            <p class="text-secondary">Pilih jenis MT yang ingin Anda buat.</p>
+        </div>
+        <form class="auth-form mt-form" id="mtForm">
+            <div id="input-link-name" class="hidden form-group">
+                <div class="input-wrapper">
+                    <input type="text" id="link" placeholder="https://contoh.com">
+                </div>
+                <div class="input-wrapper">
+                    <input type="text" id="name" placeholder="Kyzuu404">
+                </div>
+            </div>
+            <div id="input-nomer" class="hidden form-group">
+                <div class="input-wrapper">
+                    <input type="text" id="nomer" placeholder="Masukkan nomor">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <select id="choice" required>
+                        <option value="">-- Pilih Jenis MT --</option>
+                        <option value="1">MT BAND</option>
+                        <option value="2">MT UNBAND</option>
+                        <option value="3">MT PERMA</option>
+                    </select>
+                </div>
+            </div>
+            <button id="submitBtn" class="auth-btn">
+                <span class="btn-text">CREATE MT</span>
+                <div class="btn-loader"><div class="spinner"></div></div>
+            </button>
+        </form>
+        <div id="resultList" class="result-list"></div>
+        <div style="text-align:center; margin-top:2rem;">
+            <button class="logout-btn" onclick="logout()">LOGOUT</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+    <div class="toast-content">
+        <i class="toast-icon"></i>
+        <span class="toast-message"></span>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // ====== ELEMENTS ======
+    const toast = document.getElementById("toast");
+    const loginPage = document.getElementById("login-page");
+    const mtPage = document.getElementById("mt-page");
+    const loginForm = document.getElementById("loginForm");
+    const loginBtn = document.getElementById("loginBtn");
+    const mtForm = document.getElementById("mtForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const choiceSelect = document.getElementById("choice");
+    const inputLinkName = document.getElementById("input-link-name");
+    const inputNomer = document.getElementById("input-nomer");
+    const resultList = document.getElementById("resultList");
+
+    // ====== CONFIG ======
+    const BIN_ID = "68b2a0bc43b1c97be9303b9d"; 
+    const MASTER_KEY = "$2a$10$IxJzK95mhbwswU9V0jGsPuxSq04KuMH3DdozB4PuMjz011pgzO07u"; 
+
+    // ====== DEVICE ID ======
+    const getDeviceId = () => {
+        let deviceId = localStorage.getItem("deviceId");
+        if (!deviceId) {
+            deviceId = 'device_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem("deviceId", deviceId);
+        }
+        return deviceId;
+    };
+    const deviceId = getDeviceId();
+
+    // ====== TOAST ======
+    function showToast(msg, type = "success") {
+        const icon = toast.querySelector(".toast-icon");
+        const message = toast.querySelector(".toast-message");
+        toast.className = 'toast show';
+        toast.classList.add(type);
+        icon.className = "toast-icon fas";
+        if(type==="success") icon.classList.add("fa-check-circle");
+        else if(type==="error") icon.classList.add("fa-exclamation-circle");
+        else if(type==="warning") icon.classList.add("fa-exclamation-triangle");
+        message.textContent = msg;
+        setTimeout(()=>toast.classList.remove("show", type), 4000);
+    }
+    toast.addEventListener("click", ()=>toast.classList.remove("show"));
+
+    // ====== PAGE SWITCH ======
+    function showPage(pageId){
+        loginPage.classList.remove("active");
+        mtPage.classList.remove("active");
+        document.getElementById(pageId).classList.add("active");
+    }
+
+    // ====== RESET FORMS ======
+    function resetForms() {
+        loginForm.reset();
+        mtForm.reset();
+        resultList.innerHTML = "";
+        choiceSelect.value = "";
+        inputLinkName.classList.add("hidden");
+        inputNomer.classList.add("hidden");
+    }
+
+    // ====== AUTO LOGIN ======
+    if(localStorage.getItem("loggedIn") === "true"){
+        const loggedInUser = localStorage.getItem("loggedInUser");
+        checkDeviceStatus(loggedInUser);
+    }
+
+    async function checkDeviceStatus(username) {
+        try {
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                headers: { 'X-Master-Key': MASTER_KEY }
+            });
+            const data = await res.json();
+            const accounts = data.record;
+            const userAccount = accounts.find(acc => acc.username === username);
+
+            if (userAccount && userAccount.activeDevice === deviceId) {
+                showPage("mt-page");
+                showToast("✅ Auto login berhasil!","success");
+            } else {
+                localStorage.removeItem("loggedIn");
+                localStorage.removeItem("loggedInUser");
+                showPage("login-page");
+                showToast("Sesi Anda telah habis atau login dari perangkat lain. Silakan login kembali.", "warning");
+            }
+        } catch (err) {
+            console.error(err);
+            showPage("login-page");
+            showToast("Gagal memverifikasi sesi.", "error");
+        }
+    }
+
+    // ====== LOGIN SYSTEM ======
+    loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        loginBtn.classList.add("loading");
+        const user = document.getElementById("username").value.trim();
+        const pass = document.getElementById("password").value.trim();
+
+        try {
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                headers: { 'X-Master-Key': MASTER_KEY }
+            });
+            if(!res.ok) throw new Error("Gagal load akun dari JSONBin");
+            const data = await res.json();
+            let accounts = data.record;
+            let matched = accounts.find(acc => acc.username === user && acc.password === pass);
+
+            if(matched){
+                if (matched.activeDevice && matched.activeDevice !== deviceId) {
+                    resetForms();
+                    showToast("❌ Akun ini sedang login di perangkat lain.", "error");
+                    loginBtn.classList.remove("loading");
+                    return;
+                }
+
+                matched.activeDevice = deviceId;
+                const updateRes = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': MASTER_KEY
+                    },
+                    body: JSON.stringify(accounts)
+                });
+
+                if (updateRes.ok) {
+                    localStorage.setItem("loggedIn", "true");
+                    localStorage.setItem("loggedInUser", user);
+                    showPage("mt-page");
+                    showToast("✅ Login berhasil!","success");
+                } else {
+                    resetForms();
+                    throw new Error("Gagal update status perangkat.");
+                }
+            } else {
+                resetForms();
+                showToast("❌ Username/password salah","error");
+            }
+        } catch(err){
+            console.error(err);
+            showToast("❌ Gagal login: " + err.message, "error");
+            resetForms();
+        }
+        loginBtn.classList.remove("loading");
+    });
+
+    // ====== MT PAGE DYNAMIC INPUT ======
+    choiceSelect.addEventListener("change", ()=>{
+        inputLinkName.classList.add("hidden");
+        inputNomer.classList.add("hidden");
+
+        if(choiceSelect.value === "1") inputLinkName.classList.remove("hidden");
+        else if(choiceSelect.value === "2" || choiceSelect.value === "3") inputNomer.classList.remove("hidden");
+    });
+
+    // ====== MT SUBMIT ======
+    mtForm.addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        submitBtn.classList.add("loading");
+
+        const choice = choiceSelect.value;
+        const link = document.getElementById('link')?.value.trim();
+        const name = document.getElementById('name')?.value.trim();
+        const nomer = document.getElementById('nomer')?.value.trim();
+
+        if(choice==="1" && (!link || !name)){
+            showToast("Lengkapi input!","error");
+            mtForm.reset();
+            submitBtn.classList.remove("loading");
+            return;
+        }
+        if((choice==="2"||choice==="3") && !nomer){
+            showToast("Masukkan nomor!","error");
+            mtForm.reset();
+            submitBtn.classList.remove("loading");
+            return;
+        }
+
+        // ====== PILIH FILE TEMPLATE ======
+        let fileUrl = "";
+        if (choice === "1") {
+            const files = ["1.txt","2.txt","3.txt","4.txt","5.txt","6.txt","7.txt","8.txt","9.txt","10.txt","11.txt","12.txt","13.txt","14.txt","15.txt","16.txt","17.txt","18.txt"];
+            fileUrl = `mt/${files[Math.floor(Math.random() * files.length)]}`;
+        } else if (choice === "2") {
+            const files = ["1.txt","2.txt","3.txt","4.txt","5.txt"];
+            fileUrl = `mt-unband/${files[Math.floor(Math.random() * files.length)]}`;
+        } else if (choice === "3") {
+            fileUrl = "mt-perma/1.txt";
+        }
+
+        try {
+            const res = await fetch(fileUrl);
+            if(!res.ok) throw new Error("File tidak ditemukan");
+            let template = await res.text();
+
+            let result = template;
+            if(choice==="1") result = template.replaceAll("{link}", link).replaceAll(/{name}/g, name);
+            else result = template.replaceAll(/{nomer}/g, nomer);
+
+            const div = document.createElement("div");
+            div.className="result-item";
+            div.innerHTML = `<span class="label">${result}</span><button class="copy-btn">COPY</button>`;
+            resultList.prepend(div);
+
+            div.querySelector(".copy-btn").addEventListener("click", ()=>{
+                navigator.clipboard.writeText(result);
+                showToast("Teks disalin!","success");
+            });
+
+            mtForm.reset();
+        } catch(err){
+            console.error(err);
+            showToast("❌ Gagal load template","error");
+            mtForm.reset();
+        }
+
+        submitBtn.classList.remove("loading");
+    });
+
+    // ====== LOGOUT ======
+    window.logout = async ()=>{
+        const loggedInUser = localStorage.getItem("loggedInUser");
+        if (loggedInUser) {
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': MASTER_KEY }
+                });
+                const data = await res.json();
+                let accounts = data.record;
+                let userAccount = accounts.find(acc => acc.username === loggedInUser);
+                if (userAccount) {
+                    userAccount.activeDevice = null;
+                    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': MASTER_KEY
+                        },
+                        body: JSON.stringify(accounts)
+                    });
+                }
+            } catch (err) {
+                console.error("Gagal update status logout di JSONBin", err);
+            }
+        }
+        localStorage.removeItem("loggedIn");
+        localStorage.removeItem("loggedInUser");
+        showPage("login-page");
+        resetForms();
+        showToast("Anda telah logout","success");
+    };
+});
+</script>
+</body>
+</html>
